@@ -1,17 +1,17 @@
 #include "arm/armLib.h"
+#include "arm/armZ1.h"
 
 using namespace arm;
 
 
-//-----
-bool Arm::moveTo(const TipSt& t, int type)
+//---- factory
+Sp<Arm> Arm::create(const string& sModel)
 {
-    return true;
-}
-//-----
-ArmSt Arm::getSt()const
-{
-    ArmSt st;
-    return st;
-}
+    // only "z1" supported
+    if(sModel=="z1")
+        return mkSp<z1::ArmZ1>();
+    
+    log_e("Unkonw Arm type:'"+sModel+"'");
+    return nullptr;
 
+}

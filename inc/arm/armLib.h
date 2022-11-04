@@ -42,7 +42,8 @@ namespace arm{
     //----------
     class Arm{
     public:
-        bool moveTo(const TipSt& t, int type=MOVEJ);
-        ArmSt getSt()const; 
+        virtual bool moveTo(const TipSt& t, int type=MOVEJ) =0;
+        virtual ArmSt getSt()const =0; 
+        static Sp<Arm> create(const string& sModel);
     };
 }

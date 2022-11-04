@@ -8,6 +8,8 @@ namespace test
     class ArmTest : public Test{
     public:
         virtual bool run()override;
+    protected:
+        bool test_movej()const;
     };
 
 
