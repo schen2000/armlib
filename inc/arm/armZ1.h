@@ -9,7 +9,7 @@ namespace z1{
     class ArmZ1 : public Arm
     {
     public:
-        virtual bool moveTo(const TipSt& t, int type=MOVEJ) override;
+        virtual bool moveTo(const TipSt& t, int type=MOVEL) override;
         virtual ArmSt getSt()const override; 
     protected:
         unitreeArm uarm_;

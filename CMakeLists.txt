@@ -36,6 +36,7 @@ target_link_libraries(armLib
     -fPIC
     pthread
     ${OpenCV_LIBRARIES}
+    ${Eigen3_LIBRARY}    
     )
 
 FILE(GLOB  SRC_TEST test/*.cpp)
