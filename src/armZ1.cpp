@@ -11,7 +11,7 @@ bool ArmZ1::moveTo(const TipSt& t, int type)
 {
     
     //posture[0] << 0,0,0,0.45,-0.2,0.2;
-    auto& T = t.pose;
+    auto& T = t.T;
   //  Euler e(T.q);
   //  MoveL(posture[0]);
 

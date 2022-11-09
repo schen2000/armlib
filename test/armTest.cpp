@@ -12,7 +12,7 @@ bool ArmTest::test_movej()const
     {
         TipSt s;
         s.gripper = 0.5;
-        s.pose.t << 0,0,0.2;
+        s.T.t << 0,0,0.2;
         arm.moveTo(s);
     }
     return true;

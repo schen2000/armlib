@@ -22,15 +22,21 @@ namespace arm{
 
     //----------
     enum{ MOVEJ=0, MOVEL }; 
+    //--------
+    struct Trans{
+        Trans(){ t << 0,0,0; }
+        vec3 t;
+        Euler e;
+    };
     //----------
     struct TipSt{
-        vsn::Pose pose;
+        Trans T;
         double gripper = 0;
     };
     //---
     struct JointSt{
-        Pose pose;
-        float a=0;
+        Trans T;
+        // other status, acc, rot speed etc
     };
     //-----
     struct ArmSt{
