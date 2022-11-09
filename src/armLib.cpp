@@ -9,7 +9,7 @@ Sp<Arm> Arm::create(const string& sModel)
 {
     // only "z1" supported
     if(sModel=="z1")
-        return mkSp<z1::ArmZ1>();
+        return mkSp<unitree::ArmZ1>();
     
     log_e("Unkonw Arm type:'"+sModel+"'");
     return nullptr;

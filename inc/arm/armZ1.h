@@ -1,9 +1,9 @@
 #pragma once
 
 #include "arm/armLib.h"
-#include "unitreeArm.h"
+#include "arm/unitreeArm.h"
 
-namespace z1{
+namespace unitree{
     using namespace arm;
     //----
     class ArmZ1 : public Arm

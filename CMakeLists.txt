@@ -17,7 +17,6 @@ add_subdirectory(dep/z1_sdk)
 include_directories(
     inc 
     dep/z1_sdk/include
-    dep/z1_sdk/unitreeArm
     ${EIGEN3_INCLUDE_DIR}
     $ENV{vsnLib_DIR}/inc
     ${JsonCpp_INCLUDE_DIR}

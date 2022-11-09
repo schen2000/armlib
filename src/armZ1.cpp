@@ -1,7 +1,7 @@
 #include "arm/armZ1.h"
 
 using namespace arm;
-using namespace z1;
+using namespace unitree;
 
 
 
