@@ -9,6 +9,12 @@ bool ArmTest::test_movej()const
     auto p_arm = Arm::create("z1");
     assert(p_arm!=nullptr);
     auto& arm = *p_arm;
+
+    arm.init();
+
+    arm.test();
+
+    if(0)
     {
         TipSt s;
         s.gripper = 0.5;

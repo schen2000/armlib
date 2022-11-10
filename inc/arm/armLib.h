@@ -21,8 +21,6 @@ namespace arm{
     using namespace vsn;
 
     //----------
-    enum{ MOVEJ=0, MOVEL }; 
-    //--------
     struct Trans{
         Trans(){ t << 0,0,0; }
         vec3 t;
@@ -48,8 +46,14 @@ namespace arm{
     //----------
     class Arm{
     public:
-        virtual bool moveTo(const TipSt& t, int type=MOVEJ) =0;
+        struct Cfg{
+            double maxSpeed = 1;
+        }; Cfg cfg_;
+        //----
+        virtual bool init()=0;
+        virtual bool moveTo(const TipSt& t) =0;
         virtual ArmSt getSt()const =0; 
         static Sp<Arm> create(const string& sModel);
+        virtual bool test()=0;
     };
 }

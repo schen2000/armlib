@@ -6,12 +6,14 @@
 namespace unitree{
     using namespace arm;
     //----
-    class ArmZ1 : public Arm
+    class ArmZ1 : public Arm, unitreeArm
     {
     public:
-        virtual bool moveTo(const TipSt& t, int type=MOVEL) override;
+        virtual bool init()override;
+        virtual bool moveTo(const TipSt& t) override;
         virtual ArmSt getSt()const override; 
+        virtual bool test()override;
     protected:
-        unitreeArm uarm_;
+        //unitreeArm uarm_;
     };
 }
