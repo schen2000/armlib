@@ -18,9 +18,14 @@ bool ArmTest::test_basic()const
     {
         TipSt s;
         s.gripper = 0.5;
-        s.T.t << 0,0,0.2;
+        s.T.t << 0,0,0.05;
         arm.moveTo(s);
-        sys::sleepMS(2000);
+        while(1)
+        {
+            sys::sleepMS(100);
+            auto st = arm.getSt();
+            log_i("Tip : " + st.tip.T.str());
+        }
     }
     return true;
 }

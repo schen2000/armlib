@@ -15,15 +15,28 @@ namespace{
       p.z = T.t.z();
       return p;
    }
+   //----
+   Trans conv(const Posture& p)
+   {
+       Trans T;
+       T.t << p.x, p.y, p.z;
+       T.e.y = p.yaw;
+       T.e.r = p.roll;
+       T.e.p = p.pitch;
+       return T;
+   }
 }
 
 //-----
 bool ArmZ1::init()
 {
+    log_i("Init Arm Z1...");
     backToStart();
     sys::sleepMS(1000);
+    log_i("Init Arm Z1 done");
     return true;
 }
+
 
 //-----
 bool ArmZ1::moveTo(const TipSt& t)
@@ -31,14 +44,33 @@ bool ArmZ1::moveTo(const TipSt& t)
     
     //posture[0] << 0,0,0,0.45,-0.2,0.2;
     auto& T = t.T;
-    MoveL(PosturetoVec6(conv(T)));
+    //Vec6 v = PosturetoVec6(conv(T));
+    //MoveL(v);
+    //----
 
+    // No.1 trajectory
+    _trajCmd.trajOrder = 1;
+    _trajCmd.trajType = TrajType::MoveL;
+    _trajCmd.maxSpeed = 1.0;// angular velocity
+    _trajCmd.gripperPos = 0.0;
+    //posture[0] << 0.5,0.1,0.1,0.5,-0.2,0.5;
+    _trajCmd.posture[0] = conv(T);
+    setTraj(_trajCmd);
+    usleep(10000);
+
+
+    //run trajectory
+    setFsm(ArmFSMState::TRAJECTORY);
+
+    
     return true;
 }
 //-----
 ArmSt ArmZ1::getSt()const
 {
     ArmSt st;
+    auto& rs = _recvState;
+    st.tip.T = conv(rs.cartesianState);
     return st;
 }
 

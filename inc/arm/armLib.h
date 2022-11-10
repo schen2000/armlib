@@ -25,21 +25,28 @@ namespace arm{
         Trans(){ t << 0,0,0; }
         vec3 t;
         Euler e;
+        string str()const // json str
+        { return "{t:\""+vsn::str(t,3)+"\", e:\"" +e.str()+"\"}";  }
     };
     //----------
     struct TipSt{
         Trans T;
         double gripper = 0;
+        string str()const 
+        { return "{T:"+ T.str() + ", gripper:"+vsn::str(gripper) +"}"; }
     };
     //---
     struct JointSt{
-        Trans T;
+        double r=0;
         // other status, acc, rot speed etc
     };
     //-----
     struct ArmSt{
         TipSt tip;
         vector<JointSt> joints;
+        string str()const{
+            return "{ tip:"+tip.str() + "}";
+        }
     };
     //----------
     // Arm
