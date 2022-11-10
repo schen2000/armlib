@@ -26,7 +26,7 @@ namespace arm{
         vec3 t;
         Euler e;
         string str()const // json str
-        { return "{t:\""+vsn::str(t,3)+"\", e:\"" +e.str()+"\"}";  }
+        { return "{t:\""+vsn::str(t,3)+"\", ypr:\"" +e.str()+"\"}";  }
     };
     //----------
     struct TipSt{
