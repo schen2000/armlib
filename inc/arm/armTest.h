@@ -9,7 +9,7 @@ namespace test
     public:
         virtual bool run()override;
     protected:
-        bool test_movej()const;
+        bool test_basic()const;
     };
 
 

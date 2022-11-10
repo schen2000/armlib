@@ -4,7 +4,7 @@ using namespace test;
 //----------
 // test_movej
 //----------
-bool ArmTest::test_movej()const
+bool ArmTest::test_basic()const
 {
     auto p_arm = Arm::create("z1");
     assert(p_arm!=nullptr);
@@ -12,14 +12,15 @@ bool ArmTest::test_movej()const
 
     arm.init();
 
-    arm.test();
+ //   arm.test();
 
-    if(0)
+    if(1)
     {
         TipSt s;
         s.gripper = 0.5;
         s.T.t << 0,0,0.2;
         arm.moveTo(s);
+        sys::sleepMS(2000);
     }
     return true;
 }
@@ -31,5 +32,6 @@ bool ArmTest::test_movej()const
 bool ArmTest::run()
 {
     log_i("Arm test running...");
+    test_basic();
     return true;
 }
