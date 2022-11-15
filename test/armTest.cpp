@@ -12,9 +12,9 @@ bool ArmTest::test_basic()const
 
     arm.init();
 
- //   arm.test();
+    arm.test();
 
-    if(1)
+    if(0)
     {
         TipSt s;
         s.gripper = 0.5;

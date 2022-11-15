@@ -30,8 +30,10 @@ namespace{
 //-----
 bool ArmZ1::init()
 {
+    auto& uarm = *p_uarm_;
     log_i("Init Arm Z1...");
-    backToStart();
+    uarm.sendRecvThread->start();
+    uarm.backToStart();
     sys::sleepMS(1000);
     log_i("Init Arm Z1 done");
     //---- current st
@@ -44,75 +46,33 @@ bool ArmZ1::init()
 //-----
 bool ArmZ1::moveTo(const TipSt& t)
 {
-    Vec6 posture[2];
-    int order=1;
+    auto& uarm = *p_uarm_;
+    auto& cmd = uarm._trajCmd;
+    auto& ctrlc = *pCtrlComp_;
 
-    labelRun("forward");
+    Vec6 posture[2];
+    int order = 1;
+
+    uarm.labelRun("forward");
+
+    cmd.trajOrder = 0;//if order == 0, clear traj
+    uarm.setTraj();
 
     // No.1 trajectory
-    _trajCmd.trajOrder = order++;
-    _trajCmd.trajType = TrajType::MoveJ;
-    _trajCmd.maxSpeed = 1.0;// angular velocity
-    _trajCmd.gripperPos = 0.0;
-    // vec6 : e(r,p,y),t
-  //  posture[0] << 0.5,0.1,0.1,0.5,-0.2,0.5;
-    posture[0] << 0.0,0.1,0.1,  0.1,-0.2,0.3; 
-    // {t:"0.506, -0.213, 0.499", e:"0.03,0.08,0.41"}
-
-  //  _trajCmd.posture[0] = Vec6toPosture(posture[0]);
-    _trajCmd.posture[0] = conv(t.T);
-    setTraj(_trajCmd);
-    usleep(10000);
-
-    // No.2 trajectory
-    _trajCmd.trajOrder = order++;
-    _trajCmd.trajType = TrajType::Stop;
-    _trajCmd.stopTime = 1.0;
-    _trajCmd.gripperPos = -1.0;
-    setTraj(_trajCmd);
-    usleep(10000);
-/*
-    // No.3 trajectory
-    _trajCmd.trajOrder = order++;
-    _trajCmd.trajType = TrajType::MoveL;
-    _trajCmd.maxSpeed = 0.3; // Cartesian velocity
-    _trajCmd.gripperPos = 0.0;
-    posture[0] << 0,0,0,0.45,-0.2,0.2;
-    _trajCmd.posture[0] = Vec6toPosture(posture[0]);
-    setTraj(_trajCmd);
-    usleep(10000);
-
-    // No.4 trajectory
-    _trajCmd.trajOrder = order++;
-    _trajCmd.trajType = TrajType::Stop;
-    _trajCmd.stopTime = 1.0; 
-    _trajCmd.gripperPos = -1.0;
-    setTraj(_trajCmd);
-    usleep(10000);
-
-    // No.5 trajectory
-    _trajCmd.trajOrder = order++;
-    _trajCmd.trajType = TrajType::MoveC;
-    _trajCmd.maxSpeed = 0.3; // Cartesian velocity
-    _trajCmd.gripperPos = 0.0;
-    posture[0] << 0,0,0,0.45,0,0.4;
-    posture[1] << 0,0,0,0.45,0.2,0.2;
-    _trajCmd.posture[0] = Vec6toPosture(posture[0]);
-    _trajCmd.posture[1] = Vec6toPosture(posture[1]);
-    setTraj(_trajCmd);
-    usleep(10000);
-*/
+    cmd.trajOrder = order++;
+    cmd.trajType = TrajType::MoveJ;
+    cmd.maxSpeed = 1.0;// angular velocity, rad/s
+    cmd.gripperPos = 0.0;
+    posture[0] << 0.5,0.1,0.1,0.5,-0.2,0.5;
+    cmd.posture[0] = Vec6toPosture(posture[0]);
+    uarm.setTraj();
 
 
-    //run trajectory
-    setFsm(ArmFSMState::TRAJECTORY);
-
+    uarm.startTraj();
     // wait for trajectory completion
-    /*
-    while (_recvState.state != ArmFSMState::JOINTCTRL){
-        usleep(4000);
+    while (ctrlc.recvState.state != ArmFSMState::JOINTCTRL){
+        usleep(ctrlc.dt*1000000);
     }
-    */
 
     return true;
 
@@ -121,7 +81,7 @@ bool ArmZ1::moveTo(const TipSt& t)
 ArmSt ArmZ1::getSt()const
 {
     ArmSt st;
-    auto& rs = _recvState;
+    auto& rs = pCtrlComp_->recvState;
     st.tip.T = conv(rs.cartesianState);
     st.tip.gripper = rs.jointState[6].Pos;
     return st;
@@ -130,66 +90,66 @@ ArmSt ArmZ1::getSt()const
 
 bool ArmZ1::test()
 {
+    auto& uarm = *p_uarm_;
+    
     Vec6 posture[2];
-    int order=1;
+    int order = 1;
+    auto& ctrlc = *pCtrlComp_;
 
-    labelRun("forward");
+    uarm.labelRun("forward");
+    auto& cmd = uarm._trajCmd;
+
+    cmd.trajOrder = 0;//if order == 0, clear traj
+    uarm.setTraj();
 
     // No.1 trajectory
-    _trajCmd.trajOrder = order++;
-    _trajCmd.trajType = TrajType::MoveJ;
-    _trajCmd.maxSpeed = 1.0;// angular velocity
-    _trajCmd.gripperPos = 0.0;
+    cmd.trajOrder = order++;
+    cmd.trajType = TrajType::MoveJ;
+    cmd.maxSpeed = 1.0;// angular velocity, rad/s
+    cmd.gripperPos = 0.0;
     posture[0] << 0.5,0.1,0.1,0.5,-0.2,0.5;
-    _trajCmd.posture[0] = Vec6toPosture(posture[0]);
-    setTraj(_trajCmd);
-    usleep(10000);
+    cmd.posture[0] = Vec6toPosture(posture[0]);
+    uarm.setTraj();
 
     // No.2 trajectory
-    _trajCmd.trajOrder = order++;
-    _trajCmd.trajType = TrajType::Stop;
-    _trajCmd.stopTime = 1.0;
-    _trajCmd.gripperPos = -1.0;
-    setTraj(_trajCmd);
-    usleep(10000);
+    cmd.trajOrder = order++;
+    cmd.trajType = TrajType::Stop;
+    cmd.stopTime = 1.0;
+    cmd.gripperPos = -1.0;
+    uarm.setTraj();
+
 
     // No.3 trajectory
-    _trajCmd.trajOrder = order++;
-    _trajCmd.trajType = TrajType::MoveL;
-    _trajCmd.maxSpeed = 0.3; // Cartesian velocity
-    _trajCmd.gripperPos = 0.0;
+    cmd.trajOrder = order++;
+    cmd.trajType = TrajType::MoveL;
+    cmd.maxSpeed = 0.3; // Cartesian velocity , m/s
+    cmd.gripperPos = 0.0;
     posture[0] << 0,0,0,0.45,-0.2,0.2;
-    _trajCmd.posture[0] = Vec6toPosture(posture[0]);
-    setTraj(_trajCmd);
-    usleep(10000);
+    cmd.posture[0] = Vec6toPosture(posture[0]);
+    uarm.setTraj();
 
     // No.4 trajectory
-    _trajCmd.trajOrder = order++;
-    _trajCmd.trajType = TrajType::Stop;
-    _trajCmd.stopTime = 1.0; 
-    _trajCmd.gripperPos = -1.0;
-    setTraj(_trajCmd);
-    usleep(10000);
+    cmd.trajOrder = order++;
+    cmd.trajType = TrajType::Stop;
+    cmd.stopTime = 1.0; 
+    cmd.gripperPos = -1.0;
+    uarm.setTraj();
 
     // No.5 trajectory
-    _trajCmd.trajOrder = order++;
-    _trajCmd.trajType = TrajType::MoveC;
-    _trajCmd.maxSpeed = 0.3; // Cartesian velocity
-    _trajCmd.gripperPos = 0.0;
+    cmd.trajOrder = order++;
+    cmd.trajType = TrajType::MoveC;
+    cmd.maxSpeed = 0.3; // Cartesian velocity
+    cmd.gripperPos = 0.0;
     posture[0] << 0,0,0,0.45,0,0.4;
     posture[1] << 0,0,0,0.45,0.2,0.2;
-    _trajCmd.posture[0] = Vec6toPosture(posture[0]);
-    _trajCmd.posture[1] = Vec6toPosture(posture[1]);
-    setTraj(_trajCmd);
-    usleep(10000);
+    cmd.posture[0] = Vec6toPosture(posture[0]);
+    cmd.posture[1] = Vec6toPosture(posture[1]);
+    uarm.setTraj();
 
-    //run trajectory
-    setFsm(ArmFSMState::TRAJECTORY);
-
+    uarm.startTraj();
     // wait for trajectory completion
-    while (_recvState.state != ArmFSMState::JOINTCTRL){
-        usleep(4000);
+    while (ctrlc.recvState.state != ArmFSMState::JOINTCTRL){
+        usleep(ctrlc.dt*1000000);
     }
-
     return true;
 }
