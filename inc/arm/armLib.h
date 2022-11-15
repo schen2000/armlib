@@ -58,9 +58,10 @@ namespace arm{
         }; Cfg cfg_;
         //----
         virtual bool init()=0;
-        virtual bool moveTo(const TipSt& t) =0;
+        virtual bool moveTo(const TipSt& ts) =0;
         virtual ArmSt getSt()const =0; 
         static Sp<Arm> create(const string& sModel);
         virtual bool test()=0;
+     //   virtual bool done()const=0;
     };
 }

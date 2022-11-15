@@ -16,9 +16,10 @@ namespace unitree{
         }
 
         virtual bool init()override;
-        virtual bool moveTo(const TipSt& sst) override;
+        virtual bool moveTo(const TipSt& ts) override;
         virtual ArmSt getSt()const override; 
         virtual bool test()override;
+     //   virtual bool done()const override;
     protected:
         CtrlComponents* pCtrlComp_ = nullptr;
         unitreeArm* p_uarm_ = nullptr;

@@ -33,49 +33,44 @@ bool ArmZ1::init()
     auto& uarm = *p_uarm_;
     log_i("Init Arm Z1...");
     uarm.sendRecvThread->start();
+    //----
+    log_i("Back to start...");
     uarm.backToStart();
+    log_i("Now at start st.");
+
     sys::sleepMS(1000);
     log_i("Init Arm Z1 done");
+
+    //--- init state
+    uarm.setFsm(ArmFSMState::JOINTCTRL);
+    uarm.labelRun("forward");
+
     //---- current st
     auto st = getSt();
     log_i("  Tip at: "+st.tip.str());
     return true;
 }
 
+//----- TODO: not yet
+/*
+bool ArmZ1::done()const
+{
+    auto& ctrlc = *pCtrlComp_;
+    return ctrlc.recvState.state == ArmFSMState::JOINTCTRL;
+
+}
+*/
 
 //-----
-bool ArmZ1::moveTo(const TipSt& st)
+bool ArmZ1::moveTo(const TipSt& ts)
 {
     auto& uarm = *p_uarm_;
     auto& cmd = uarm._trajCmd;
     auto& ctrlc = *pCtrlComp_;
 
-    Vec6 posture[2];
-    int order = 1;
-
-    uarm.labelRun("forward");
-
-    cmd.trajOrder = 0;//if order == 0, clear traj
-    uarm.setTraj();
-
-    // No.1 trajectory
-    cmd.trajOrder = order++;
-    cmd.trajType = TrajType::MoveJ;
-    cmd.maxSpeed = 1.0;// angular velocity, rad/s
-    cmd.gripperPos = st.gripper;
-    posture[0] << 0.5,0.1,0.1,0.5,-0.2,0.5;
-    auto p = conv(st.T);
-    
-    cmd.posture[0] = p;
-    uarm.setTraj();
-
-
-    uarm.startTraj();
-    // wait for trajectory completion
-    while (ctrlc.recvState.state != ArmFSMState::JOINTCTRL){
-        usleep(ctrlc.dt*1000000);
-    }
-
+    auto p = conv(ts.T);
+    Vec6 v = PosturetoVec6(p);
+    uarm.MoveJ(v,  ts.gripper, cfg_.maxSpeed);
     return true;
 
 }
