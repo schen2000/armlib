@@ -44,7 +44,7 @@ bool ArmZ1::init()
 
 
 //-----
-bool ArmZ1::moveTo(const TipSt& t)
+bool ArmZ1::moveTo(const TipSt& st)
 {
     auto& uarm = *p_uarm_;
     auto& cmd = uarm._trajCmd;
@@ -62,9 +62,11 @@ bool ArmZ1::moveTo(const TipSt& t)
     cmd.trajOrder = order++;
     cmd.trajType = TrajType::MoveJ;
     cmd.maxSpeed = 1.0;// angular velocity, rad/s
-    cmd.gripperPos = 0.0;
+    cmd.gripperPos = st.gripper;
     posture[0] << 0.5,0.1,0.1,0.5,-0.2,0.5;
-    cmd.posture[0] = Vec6toPosture(posture[0]);
+    auto p = conv(st.T);
+    
+    cmd.posture[0] = p;
     uarm.setTraj();
 
 

@@ -12,13 +12,13 @@ bool ArmTest::test_basic()const
 
     arm.init();
 
-    arm.test();
+//  arm.test();
 
-    if(0)
+    if(1)
     {
         TipSt s;
-        s.gripper = 0.5;
-        s.T.t << 0.1,0,0.2;
+        s.gripper = -0.2;
+        s.T.t << 0.4,0.2,0.3;
         arm.moveTo(s);
         while(1)
         {
