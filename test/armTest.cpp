@@ -37,9 +37,9 @@ bool ArmTest::test_moveTo()const
 
     TipSt ts;
 
-    //-----
+    //-----1
     ts.gripper = -0.2;
-    ts.T.t << 0,0.3,0.4;
+    ts.T.t << 0.2, 0.15, 0.2;
     ts.T.e = Euler(M_PI/2,0,0);
     log_i("arm moveTo: "+ts.T.str());
     arm.moveTo(ts);
@@ -47,7 +47,8 @@ bool ArmTest::test_moveTo()const
     log_i("arm moveTo done. ");
     sys::sleepMS(2000);
 
-    //----
+    //----2
+    /*
     ts.gripper = 0;
     ts.T.t << -0.3,-0.1,0.4;
     ts.T.e = Euler(M_PI,0,0);
@@ -55,6 +56,7 @@ bool ArmTest::test_moveTo()const
     arm.moveTo(ts);
     wait_done(arm);
     log_i("arm moveTo done. ");
+    */
 
     //----
     sys::sleepMS(3000);
