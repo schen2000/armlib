@@ -7,9 +7,9 @@ namespace{
    Posture conv(const Trans& T)
    {
       Posture p;
-      p.pitch = T.e.p;
-      p.roll = T.e.r;
-      p.yaw = T.e.y;
+      p.pitch = toRad(T.e.p);
+      p.roll = toRad(T.e.r);
+      p.yaw = toRad(T.e.y);
       p.x = T.t.x();
       p.y = T.t.y();
       p.z = T.t.z();

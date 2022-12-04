@@ -42,3 +42,7 @@ FILE(GLOB  SRC_TEST test/*.cpp)
 add_executable(armTest ${SRC_TEST})
 target_link_libraries(armTest armLib)
 
+FILE(GLOB  SRC_ARMCMD app/armCmd/*.cpp)
+add_executable(armcmd ${SRC_ARMCMD})
+target_link_libraries(armcmd armLib)
+

@@ -42,7 +42,7 @@ bool ArmTest::test_moveTo()const
     ts.gripper = 0;
     ts.T.t << 0.2, -0.18, 0.3;
     ts.gripper = 0.3;
-    ts.T.e = Euler(0, M_PI/4,0);
+    ts.T.e = Euler(0, 45,0);
 
 //    ts.T.t <<  0,0.3,0.4;
  //   ts.T.e = Euler(M_PI/2,0,0);
@@ -58,7 +58,7 @@ bool ArmTest::test_moveTo()const
     
     ts.gripper = -0.3;
     ts.T.t << -0.3,-0.1,0.4;
-    ts.T.e = Euler(M_PI,0,0);
+    ts.T.e = Euler(180,0,0);
     log_i("arm moveTo: "+ts.T.str()+"...");
     arm.moveTo(ts);
     wait_done(arm);
@@ -68,7 +68,7 @@ bool ArmTest::test_moveTo()const
     log_i("-------------- Pose 2 ");
     
     ts.gripper = 0;
-    ts.T.e = Euler(M_PI*0.9,0,0);
+    ts.T.e = Euler(180*0.9,0,0);
     log_i("arm moveTo: "+ts.T.str()+"...");
     arm.moveTo(ts);
     wait_done(arm);

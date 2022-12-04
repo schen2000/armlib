@@ -64,4 +64,15 @@ namespace arm{
         virtual bool test()=0;
      //   virtual bool done()const=0;
     };
+    //--------
+    // ArmCmd
+    //--------
+    class ArmCmd : public Cmd
+    {
+    public:
+        ArmCmd();
+    protected:
+        bool moveto(CStrs& args);
+        Sp<Arm> p_arm_ = nullptr;
+    };
 }
