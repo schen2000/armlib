@@ -78,7 +78,11 @@ bool ArmCmd::run_server(CStrs& args)
 
         //---- run cmd
         bool ok = this->run(scmd);
-        svr.send(data_.s_jres);
+        string sj = string("{") +
+            (ok?"'st':'ok'" :"'st':'fail'") +
+            "'res':" + data_.s_jres +
+            "}";
+        svr.send(sj);
 
     });
     //-----
