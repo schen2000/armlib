@@ -21,6 +21,11 @@ ArmCmd::ArmCmd()
         add("moveto", mkSp<Cmd>("set coord <x,y,z,rx,ry,rz>",
         [&](CStrs& args)->bool{ return moveto(args); }));
     }
+    //----
+    {
+        add("server", mkSp<Cmd>("server port=PORT",
+        [&](CStrs& args)->bool{ return run_server(args); }));
+    }
 }
 //----
 bool ArmCmd::moveto(CStrs& args)
@@ -50,5 +55,44 @@ bool ArmCmd::moveto(CStrs& args)
     //---- run
     arm.moveTo(st);
 
+    return true;
+}
+
+//----- arm server
+bool ArmCmd::run_server(CStrs& args)
+{
+    socket::Server svr;
+
+    StrTbl kv; parseKV(args, kv);
+    string s_port = lookup(kv, string("port"));
+    int port=0; 
+    if(!s2d(s_port, port))
+    {
+        log_e(" failed to get para 'port'");
+        return false;
+    }
+    //-----
+    svr.setRcv([&](const char* buf , int len){
+        string scmd(buf, len);
+        log_i("Run cmd:'"+scmd+"'");
+
+        //---- run cmd
+        bool ok = this->run(scmd);
+        svr.send(data_.s_jres);
+
+    });
+    //-----
+    bool ok = svr.start(port);
+    if(!ok)
+    {
+        log_e("Failed to start server at port:"+to_string(port));
+        return false;
+    }
+    //---- server started
+
+    while(svr.isRunning())
+        sys::sleepMS(200);
+    log_i("Server shutdown");
+    //---- 
     return true;
 }
