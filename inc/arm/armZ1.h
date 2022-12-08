@@ -1,10 +1,14 @@
 #pragma once
 
 #include "arm/armLib.h"
+
+using namespace arm;
+
+#ifdef WITH_ARM_Z1
+
 #include "control/unitreeArm.h"
 
 namespace unitree{
-    using namespace arm;
     //----
     class ArmZ1 : public Arm
     {
@@ -25,3 +29,5 @@ namespace unitree{
         unitreeArm* p_uarm_ = nullptr;
     };
 }
+
+#endif // #ifdef WITH_ARM_Z1

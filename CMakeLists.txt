@@ -12,26 +12,37 @@ link_directories(/opt/dep/local/lib)
 #---- 
 message(STATUS "vsnLb_DIR=$ENV{vsnLib_DIR}")
 
-add_subdirectory(dep/z1_sdk)
-
 include_directories(
     inc 
-    dep/z1_sdk/include/unitree_arm_sdk
     ${EIGEN3_INCLUDE_DIR}
     $ENV{vsnLib_DIR}/inc
     ${JsonCpp_INCLUDE_DIR}
     /opt/dep/local/include
     /usr/include/jsoncpp
-
     )
 
-link_directories(dep/z1_sdk/lib)
+#----------- Arm Z1 -------------
+if(WITH_ARM_Z1)
+    add_subdirectory(dep/z1_sdk)
+    include_directories(
+        inc 
+        dep/z1_sdk/include/unitree_arm_sdk
+        ${EIGEN3_INCLUDE_DIR}
+        $ENV{vsnLib_DIR}/inc
+        ${JsonCpp_INCLUDE_DIR}
+        /opt/dep/local/include
+        /usr/include/jsoncpp
+        )
+    link_directories(dep/z1_sdk/lib)
+    set(Z1_LINK_LIB Z1_SDK_Linux64)
+    add_definitions(-DWITH_ARM_Z1)
+endif()
 
 FILE(GLOB  SRC_CORE src/*.cpp)
 add_library(armLib ${SRC_CORE} )
 target_link_libraries(armLib   
     vsnLib 
-    Z1_SDK_Linux64
+    ${Z1_LINK_LIB}
     -fPIC
     pthread
     ${OpenCV_LIBRARIES}

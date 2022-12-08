@@ -13,7 +13,6 @@
 #include "vsn/vsnLib.h"
 
 
-
 namespace arm{
     using namespace std;
     using namespace ut;
@@ -59,7 +58,9 @@ namespace arm{
         //----
         virtual bool init()=0;
         virtual bool moveTo(const TipSt& ts) =0;
-        virtual ArmSt getSt()const =0; 
+        virtual ArmSt getSt()const =0;
+
+        //---- factory 
         static Sp<Arm> create(const string& sModel);
         virtual bool test()=0;
      //   virtual bool done()const=0;

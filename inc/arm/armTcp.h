@@ -8,6 +8,7 @@ namespace arm{
     {
     public:
         ArmTcp(const string& sHost, int port);
+        ArmTcp(const string& sUri); // 'host:port'
 
         virtual bool init()override;
         virtual bool moveTo(const TipSt& ts) override;

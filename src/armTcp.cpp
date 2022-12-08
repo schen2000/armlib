@@ -9,14 +9,28 @@ ArmTcp::ArmTcp(const string& sHost, int port)
     cntx.port = port;
 }
 
+ArmTcp::ArmTcp(const string& sUri)
+{
+    auto ss = tokens(sUri, ':');
+    if(ss.size()<2)
+    {
+        log_e("sUri incorrect:'"+sUri+
+        "', expect 'ip/hostname:port'");
+        return;
+    }
+    //----
+    client_.cntx_.sHost = ss[0];
+    s2d(ss[1], client_.cntx_.port);
+}
+
 //-----
 bool ArmTcp::init()
 {
-    auto& cntx = client.cntx_;
-    client.setRcv([](const char& buf, int len){
+    auto& cntx = client_.cntx_;
+    client_.setRcv([&](const char* buf, int len){
         onRecv(buf, len);
     });
-    bool ok = client.connect(cntx.sHost, cntx.port); 
+    bool ok = client_.connect(cntx.sHost, cntx.port); 
     return ok;
 }
 
@@ -34,16 +48,17 @@ bool ArmTcp::moveTo(const TipSt& ts)
     string s = "moveto ";
     s += "xyz=" + str(ts.T.t) + " ";
     s += "rvec=" + ts.T.e.str()+ " ";
-    s += "grip=" + str(ts.T.gripper);
+    s += "grip=" + str(ts.gripper);
 
-    bool ok = client.send(s);
+    bool ok = client_.send(s);
     return ok;
 
 }
 
 ArmSt ArmTcp::getSt()const 
 {
-    return true;
+    ArmSt st;
+    return st;
 
 }
 

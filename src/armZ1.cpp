@@ -1,5 +1,7 @@
 #include "arm/armZ1.h"
 
+#ifdef WITH_ARM_Z1
+
 using namespace arm;
 using namespace unitree;
 
@@ -150,3 +152,5 @@ bool ArmZ1::test()
     }
     return true;
 }
+
+#endif // #ifdef WITH_ARM_Z1
