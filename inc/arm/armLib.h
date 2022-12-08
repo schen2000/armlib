@@ -72,6 +72,7 @@ namespace arm{
     {
     public:
         ArmCmd();
+
     protected:
         bool moveto(CStrs& args);
         bool run_server(CStrs& args);
@@ -79,5 +80,6 @@ namespace arm{
             string s_jres; // cmd result json string
         }; Data data_;
         Sp<Arm> p_arm_ = nullptr;
+        bool checkInit(CStrs& args);
     };
 }

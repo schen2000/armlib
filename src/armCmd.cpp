@@ -5,7 +5,6 @@ using namespace arm;
 
 namespace{
     struct LCfg{
-        string sArmDefault = "z1";
     }; LCfg lc_;
 }
 
@@ -13,12 +12,24 @@ namespace{
 //-------
 ArmCmd::ArmCmd()
 {
-    p_arm_ = Arm::create(lc_.sArmDefault);
-    p_arm_->init();
+    
 
     //----
     {
-        add("moveto", mkSp<Cmd>("set coord <x,y,z,rx,ry,rz>",
+        add("init", mkSp<Cmd>("init name=[NAME]",
+        [&](CStrs& args)->bool{ 
+            StrTbl kv; parseKV(args, kv);
+            string sN = lookup(kv, "arm");
+            p_arm_ = Arm::create(sN);
+            if(p_arm_==nullptr)
+                return false;
+            return p_arm_->init();
+
+        }));
+    }
+    //----
+    {
+        add("moveto", mkSp<Cmd>("moveto <x,y,z,rx,ry,rz>",
         [&](CStrs& args)->bool{ return moveto(args); }));
     }
     //----
@@ -28,11 +39,34 @@ ArmCmd::ArmCmd()
     }
 }
 //----
+bool ArmCmd::checkInit(CStrs& args)
+{
+    if(p_arm_!=nullptr)
+        return true;
+    
+    StrTbl kv; parseKV(args, kv);
+    string sArm = lookup(kv, "arm");
+    if(sArm=="")
+        p_arm_ = Arm::create(sArm);
+    if(p_arm_==nullptr) {
+        log_e("Arm null");
+        return false;
+    }
+
+    bool ok = p_arm_->init();
+    return ok;  
+}
+
+//----
 bool ArmCmd::moveto(CStrs& args)
 {
     assert(p_arm_!=nullptr);
     auto& arm = *p_arm_;
 
+    if(!checkInit(args))
+        return false;
+
+    //----
     StrTbl kv; parseKV(args, kv);
     string sxyz = lookup(kv, string("xyz"));
     string srvec = lookup(kv, string("rvec"));
